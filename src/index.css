@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+@theme {
+    --font-masthead: "Cinzel Decorative", serif;
+    --font-headline: "Playfair Display", serif;
+    --font-body: "Lora", serif;
+    --font-script: "Dancing Script", cursive;
+
+    --color-cream: #f5f0e1;
+    --color-cream-dark: #e8e0cc;
+    --color-ink: #1a1a1a;
+    --color-ink-light: #3a3a3a;
+    --color-ink-muted: #6b6b6b;
+    --color-rule: #2a2a2a;
+    --color-rule-light: #c4b99a;
+    --color-accent: #8b0000;
+
+    --spacing-section: 1.25rem;
+    --spacing-gutter: 1.25rem;
+}
+
+@layer base {
+
+    *,
+    *::before,
+    *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        font-family: var(--font-body);
+        background-color: var(--color-cream);
+        color: var(--color-ink);
+        line-height: 1.7;
+        font-size: 16px;
+    }
+
+    ::selection {
+        background-color: var(--color-ink);
+        color: var(--color-cream);
+    }
+}
+
+@layer components {
+    .rule-thick {
+        border: none;
+        height: 2px;
+        background: var(--color-rule);
+    }
+
+    .rule-thin {
+        border: none;
+        height: 1px;
+        background: var(--color-rule-light);
+    }
+
+    .drop-cap::first-letter {
+        font-family: var(--font-headline);
+        float: left;
+        font-size: 3.5rem;
+        line-height: 0.82;
+        padding-right: 0.35rem;
+        padding-top: 0.1rem;
+        font-weight: 700;
+        color: var(--color-ink);
+    }
+
+    .col-text {
+        text-align: justify;
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        font-size: 0.85rem;
+        line-height: 1.75;
+        color: var(--color-ink-light);
+    }
+
+    .col-rule {
+        width: 1px;
+        background: var(--color-rule-light);
+        align-self: stretch;
+        display: none;
+    }
+
+    @media (min-width: 640px) {
+        .col-rule {
+            display: block;
+        }
+    }
+
+    .newspaper-page {
+        max-width: 720px;
+        margin: 0 auto;
+        background: var(--color-cream);
+        min-height: 100vh;
+        position: relative;
+        transform-origin: center top;
+        animation: uncrumple 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes uncrumple {
+        0% {
+            opacity: 0;
+            transform: perspective(800px) rotateX(4deg) scale(0.96);
+            filter: brightness(0.92) contrast(1.1);
+        }
+
+        40% {
+            opacity: 1;
+            filter: brightness(0.97) contrast(1.05);
+        }
+
+        100% {
+            opacity: 1;
+            transform: perspective(800px) rotateX(0deg) scale(1);
+            filter: brightness(1) contrast(1);
+        }
+    }
+
+    @media (min-width: 640px) {
+        .newspaper-page {
+            border-left: 1px solid var(--color-rule-light);
+            border-right: 1px solid var(--color-rule-light);
+        }
+    }
+
+    .newspaper-page::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .newspaper-page::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at center,
+                transparent 60%,
+                rgba(120, 100, 60, 0.08) 80%,
+                rgba(80, 60, 30, 0.18) 100%);
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    .newspaper-page>* {
+        position: relative;
+        z-index: 2;
+    }
+
+    @keyframes print-in {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .print-section {
+        opacity: 0;
+        animation: print-in 0.6s ease-out forwards;
+    }
+
+    .section {
+        padding: var(--spacing-section) var(--spacing-gutter);
+    }
+}
+
+@media print {
+    body {
+        background: white;
+    }
+
+    .newspaper-page {
+        border: none;
+    }
+}
